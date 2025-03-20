@@ -2,6 +2,8 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      nodejs: '22.x'
     commands:
       - npm install -g npm
       - npm install
