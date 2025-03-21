@@ -17,7 +17,9 @@ test('Pipeline Stack', () => {
 test('Adding Service Stage', () => {
   const app = new cdk.App();
   const pipeline = new Pipeline.PipelineStack(app, 'PipelineStack');
-  const service = new ServiceStack(app, 'ServiceStack');
+  const service = new ServiceStack(app, 'ServiceStack', {
+    stageName: 'Test',
+  });
 
   pipeline.addServiceStage(service, 'Test');
 

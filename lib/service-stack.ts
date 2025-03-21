@@ -3,9 +3,14 @@ import { Construct } from 'constructs';
 import {HttpApi} from "aws-cdk-lib/aws-apigatewayv2";
 import {HttpLambdaIntegration} from "aws-cdk-lib/aws-apigatewayv2-integrations";
 
+
+interface ServiceStackProps extends StackProps {
+    stageName: string;
+}
+
 export class ServiceStack extends Stack {
     public readonly serviceCode: aws_lambda.CfnParametersCode;
-    constructor(scope: Construct, id: string, props?: StackProps) {
+    constructor(scope: Construct, id: string, props: ServiceStackProps) {
         super(scope, id, props);
 
         this.serviceCode = aws_lambda.Code.fromCfnParameters()
@@ -14,12 +19,12 @@ export class ServiceStack extends Stack {
             runtime: aws_lambda.Runtime.NODEJS_16_X,
             handler: 'src/lambda.handler',
             code: this.serviceCode,
-            functionName: 'ServiceLambda',
+            functionName: `ServiceLambda${props.stageName}`,
         })
 
         new HttpApi(this, 'Service API', {
             defaultIntegration: new HttpLambdaIntegration("LambdaIntegration", lambda),
-            apiName: 'MyService',
+            apiName: `MyService${props.stageName}`,
         });
     }
 }
