@@ -4,7 +4,7 @@ import {HttpApi} from "aws-cdk-lib/aws-apigatewayv2";
 import {HttpLambdaIntegration} from "aws-cdk-lib/aws-apigatewayv2-integrations";
 
 export class ServiceStack extends Stack {
-    public readonly serviceCode: aws_lambda.Code;
+    public readonly serviceCode: aws_lambda.CfnParametersCode;
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
