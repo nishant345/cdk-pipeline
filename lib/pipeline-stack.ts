@@ -45,21 +45,34 @@ export class PipelineStack extends Stack {
     });
 
     const cdkBuildOutput = new Artifact('CdkBuildOutput');
+    const serviceBuildOutput = new Artifact('serviceBuildOutput');
 
     pipeline.addStage({
       stageName: 'Build',
-      actions: [new CodeBuildAction({
-        actionName: "Cdk_Build",
-        input: cdkSourceOutput,
-        outputs: [cdkBuildOutput],
-        project: new PipelineProject(this, 'CdkBuildProject', {
-          environment: {
-            buildImage: LinuxBuildImage.STANDARD_5_0
-          },
-          buildSpec: BuildSpec.fromSourceFilename('build-specs/cdk-build-spec.yml')
-        })
-      })
+      actions: [
+          new CodeBuildAction({
+            actionName: "Cdk_Build",
+            input: cdkSourceOutput,
+            outputs: [cdkBuildOutput],
+            project: new PipelineProject(this, 'CdkBuildProject', {
+              environment: {
+                buildImage: LinuxBuildImage.STANDARD_5_0
+              },
+              buildSpec: BuildSpec.fromSourceFilename('build-specs/cdk-build-spec.yml')
+            })
+          }),
 
+        new CodeBuildAction({
+          actionName: "Service_Build",
+          input: serviceSourceOutput,
+          outputs: [serviceBuildOutput],
+          project: new PipelineProject(this, 'ServiceBuildProject', {
+            environment: {
+              buildImage: LinuxBuildImage.STANDARD_5_0
+            },
+            buildSpec: BuildSpec.fromSourceFilename('build-specs/service-build-spec.yml')
+          })
+        })
       ]
     });
 
